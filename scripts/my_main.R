@@ -81,3 +81,5 @@ for (day in days) {
         my.go.analysis.day(day = day)
         my.kegg.analysis.day(day = day, eb.dir.list = eb.dir.list)
 }
+source("my_time_courses.R")
+my.time.courses()
