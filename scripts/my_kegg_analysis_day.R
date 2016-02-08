@@ -1,5 +1,7 @@
 my.kegg.analysis.day <- function(day="D14", html.only=TRUE, eb.dir.list){
         library(EnrichmentBrowser)
+        config.ebrowser("PLOT.HEIGHT", 1000)
+        config.ebrowser("PLOT.WIDTH", 1000)
         source("my_musa_kegg.R")
         mus.gs <- my.load.mus.gs()
         mus.grn <- my.load.mus.grn()
