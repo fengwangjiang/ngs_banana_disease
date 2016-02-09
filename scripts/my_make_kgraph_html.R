@@ -64,13 +64,16 @@ my.pathview2 <- function(gene.data, pathway.id, out.suffix="kgraph"){
         plot.data.gene=node.map(mol.data=gene.data, node.data,
                                 node.types="gene", node.sum = "sum")
         plot.data.gene$width <- plot.data.gene$width*1.5 # 123456789 for gene names, previously 1.2.3.4.
-        cols.ts.gene=node.color(plot.data.gene, limit=1, bins=10)
+        cols.ts.gene=node.color(plot.data.gene, limit=1, bins=10, low = "red", high = "green")
         
         keggview.graph(
                 plot.data.gene = plot.data.gene, cols.ts.gene = cols.ts.gene,
                 node.data = node.data, path.graph = gR1,
                 pathway.name = PATHWAY, same.layer = TRUE,
-                out.suffix = out.suffix
+                out.suffix = out.suffix,
+                low = list(gene = "red", cpd = "blue"),
+                mid = list(gene = "gray", cpd = "gray"), 
+                high = list(gene = "green", cpd = "yellow")
         )
         
         

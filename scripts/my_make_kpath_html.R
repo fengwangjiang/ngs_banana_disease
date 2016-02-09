@@ -31,11 +31,14 @@ my.pathview <- function(gene.data, pathway.id, out.suffix="kpath"){
                 
         plot.data.gene=node.map(mol.data=gene.data, node.data,
                                 node.types="gene", node.sum = "sum")
-        cols.ts.gene=node.color(plot.data.gene, limit=1, bins=10)
+        cols.ts.gene=node.color(plot.data.gene, limit=1, bins=10, low = "red", high = "green")
         keggview.native(plot.data.gene = plot.data.gene, node.data = node.data, same.layer = TRUE,
                         kegg.dir = KEGG.DIR,
                         pathway.name = PATHWAY,
-                        cols.ts.gene = cols.ts.gene, out.suffix = out.suffix )
+                        cols.ts.gene = cols.ts.gene, out.suffix = out.suffix,
+                        low = list(gene = "red", cpd = "blue"),
+                        mid = list(gene = "gray", cpd = "gray"), 
+                        high = list(gene = "green", cpd = "yellow"))
         # gR1=pathview:::parseKGML2Graph2(xml.file, genesOnly=FALSE, expand=FALSE, split.group=FALSE)
 #         gR1=pathview:::parseKGML2Graph2(xml.file, genesOnly=TRUE, expand=FALSE, split.group=FALSE)
 #         node.data2=node.info(gR1)
