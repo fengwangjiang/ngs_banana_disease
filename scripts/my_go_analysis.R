@@ -33,8 +33,11 @@ my.go.analysis <- function(res, GO="MF", gs.pvalue=0.05, gs.size=10) {
         GO_term <- unique(gene_MF_GO_term %>%
                                   dplyr::select(GO.Term, Description) %>%
                                   dplyr::filter(GO.Term %in% sig.geneset))
+        GO_pvalue <- gsaResTab[ii, c(1, 10)]
+        colnames(GO_pvalue) <- c("GO.Term", "pvalue")
+        GO_term_pvalue <- dplyr::left_join(GO_term, GO_pvalue, by="GO.Term")
         message(sprintf("significe level: %.2f\n", thresh))
-        return(GO_term)
+        return(GO_term_pvalue)
 }
 # res <- res_list_d2[[5]]
 # 
