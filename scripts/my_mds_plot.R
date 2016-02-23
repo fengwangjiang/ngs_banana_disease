@@ -23,7 +23,7 @@ my.mds.plot <- function(rld, method="euclidean", dim=2, main=NULL, filename=NULL
                 filename <- file.path(DIR.FIGURE, filename)
         }
         
-        pdf(file = filename)
+        # pdf(file = filename)
         
         # distance and isoMDS
         assay <- assay(rld)
@@ -39,18 +39,45 @@ my.mds.plot <- function(rld, method="euclidean", dim=2, main=NULL, filename=NULL
                 pt.cex = rep(2, length(legend))
         )
         if (dim == 2){
-                x = mds$points[, 1]
-                y = mds$points[, 2]
-                plot(x, y, col.axis="blue", type='p', cex=2, pch=16,
-                     xlim = 1.3*c(-max(abs(x)), max(abs(x))),
-                     ylim = 1.3*c(-max(abs(y)), max(abs(y))),
-                     main=main,
-                     col=jcolor$color[match(meta$condition, jcolor$conditon)],
-                     xlab="",ylab="",
-                     sub = sprintf("Stress = %.2f %%", mds$stress))
-                grid(col="lightblue")
-                wordcloud::textplot(x, y, words=label, cex=0.8, new = FALSE)
-                do.call(legend, arglist_legend)
+                my_df <- as.data.frame(mds$points)
+                my_df <- dplyr::mutate(
+                        my_df, name=rownames(my_df), x=V1, y=V2,
+                        group=factor(ifelse(grepl("Cav", name), "Cav", "Bcl")),
+                        cond=factor(ifelse(grepl("Ct", name), "Ct", "In")))
+                # calculating the ellipses by df$group
+                library(ellipse)
+                # create an empty dataframe
+                df_ell <- data.frame()
+                for(g in levels(my_df$group)){
+                        # create 100 points per variable around the mean of each group
+                        df_ell <- rbind(df_ell, cbind(as.data.frame(with(my_df[my_df$group==g,], ellipse(cor(x, y), scale=c(sd(x),sd(y)), centre=c(mean(x),mean(y))))), group=g))
+                }
+                library(ggplot2)
+                # create the ggplot with points colored by grouo
+                g <- ggplot(data=my_df, aes(x=x, y=y,colour=group)) + 
+                        # draw points
+                        #geom_point(size=1.5, alpha=.6) +
+                        geom_point(aes(shape=cond)) +
+                        # draw ellipse lines
+                        geom_path(data=df_ell, aes(x=x, y=y,colour=group), size=1, linetype=1) +
+                        # style as black and white theme
+                        theme_bw()
+                library(ggrepel)
+                g_text <- g + geom_text_repel(data=my_df, aes(label=name))
+                ggsave(filename = filename)
+                
+                # x = mds$points[, 1]
+                # y = mds$points[, 2]
+                # plot(x, y, col.axis="blue", type='p', cex=2, pch=16,
+                #      xlim = 1.3*c(-max(abs(x)), max(abs(x))),
+                #      ylim = 1.3*c(-max(abs(y)), max(abs(y))),
+                #      main=main,
+                #      col=jcolor$color[match(meta$condition, jcolor$conditon)],
+                #      xlab="",ylab="",
+                #      sub = sprintf("Stress = %.2f %%", mds$stress))
+                # grid(col="lightblue")
+                # wordcloud::textplot(x, y, words=label, cex=0.8, new = FALSE)
+                # do.call(legend, arglist_legend)
         }
         if (dim == 3) {
                 x = mds$points[,1]
@@ -70,6 +97,6 @@ my.mds.plot <- function(rld, method="euclidean", dim=2, main=NULL, filename=NULL
                 wordcloud::textplot(coord.2d$x, coord.2d$y,
                                     words=label, cex=0.8, new = FALSE)
                 do.call(legend, arglist_legend)
+                tmp = dev.off()
         }
-        tmp = dev.off()
 }
