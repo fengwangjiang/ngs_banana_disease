@@ -42,9 +42,9 @@ my.mds.plot <- function(rld, method="euclidean", dim=2, main=NULL, filename=NULL
                 my_df <- as.data.frame(mds$points)
                 my_df <- dplyr::mutate(
                         my_df, name=rownames(my_df), x=V1, y=V2,
-                        cell=factor(ifelse(grepl("Cav", name), "Cav", "Bcl")),
-                        cond=factor(ifelse(grepl("Ct", name), "Ct", "In")),
-                        group=as.factor(paste0(cell, cond)))
+                        group=factor(ifelse(grepl("Cav", name), "Cav", "Bcl")),
+                        cond=factor(ifelse(grepl("Ct", name), "Ct", "In")))
+                        # group=as.factor(paste0(cell, cond)))
                 # calculating the ellipses by df$group
                 library(ellipse)
                 # create an empty dataframe
