@@ -42,8 +42,9 @@ my.mds.plot <- function(rld, method="euclidean", dim=2, main=NULL, filename=NULL
                 my_df <- as.data.frame(mds$points)
                 my_df <- dplyr::mutate(
                         my_df, name=rownames(my_df), x=V1, y=V2,
-                        group=factor(ifelse(grepl("Cav", name), "Cav", "Bcl")),
-                        cond=factor(ifelse(grepl("Ct", name), "Ct", "In")))
+                        cell=factor(ifelse(grepl("Cav", name), "Cav", "Bcl")),
+                        cond=factor(ifelse(grepl("Ct", name), "Ct", "In")),
+                        group=as.factor(paste0(cell, cond)))
                 # calculating the ellipses by df$group
                 library(ellipse)
                 # create an empty dataframe
@@ -57,9 +58,9 @@ my.mds.plot <- function(rld, method="euclidean", dim=2, main=NULL, filename=NULL
                 g <- ggplot(data=my_df, aes(x=x, y=y,colour=group)) + 
                         # draw points
                         #geom_point(size=1.5, alpha=.6) +
-                        geom_point(aes(shape=cond)) +
+                        geom_point(size=3, aes(shape=cond)) +
                         # draw ellipse lines
-                        geom_path(data=df_ell, aes(x=x, y=y,colour=group), size=1, linetype=1) +
+                        geom_path(data=df_ell, aes(x=x, y=y,colour=group), size=0.5, linetype=1) +
                         # style as black and white theme
                         theme_bw()
                 library(ggrepel)
