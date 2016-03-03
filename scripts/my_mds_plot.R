@@ -60,7 +60,8 @@ my.mds.plot <- function(rld, method="euclidean", dim=2, main=NULL, filename=NULL
                         #geom_point(size=1.5, alpha=.6) +
                         geom_point(size=3, aes(shape=cond)) +
                         # draw ellipse lines
-                        geom_path(data=df_ell, aes(x=x, y=y,colour=group), size=0.5, linetype=1) +
+                        # geom_path(data=df_ell, aes(x=x, y=y,colour=group), size=0.5, linetype=1) +
+                        geom_path(data=df_ell, aes(x=x, y=y,colour=group), size=0.5, linetype=0) +
                         # style as black and white theme
                         theme_bw()
                 library(ggrepel)
